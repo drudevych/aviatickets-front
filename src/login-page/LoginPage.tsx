@@ -18,13 +18,14 @@ const LoginPage = (props: ILoginPageProps) => {
         event.preventDefault();
         if(email !== '' && password !== '')
         {
-            const jwt = await userService.login(email, password);
+            const authInfo = await userService.login(email, password);
 
-            if(jwt === null)
+            if(authInfo.jwt === null)
             {
                 alert('Login failed')
             }else{
-                localStorage.setItem('jwt', jwt)
+                localStorage.setItem('jwt', authInfo.jwt)
+                localStorage.setItem('userId', authInfo.id)
 
                 setLoggedIn(true);
             }

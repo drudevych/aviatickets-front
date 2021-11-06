@@ -2,26 +2,36 @@ import React, { useEffect, useState } from 'react';
 import IFlight from './interfaces/IFlight'
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button } from '@mui/material';
 import { flightService } from '../shared/services/flightService'
+import FlightInfo from '../flight-info-page/FlightInfo';
+import { useHistory } from 'react-router-dom';
 
 export interface IFlightsProps{
     from: string;
     destination: string;
+    clearState: () => void;
 }
 
 const Flights = (props: IFlightsProps) => {
     
-    const {from, destination} = props;
+    const {from, destination, clearState} = props;
+
+    const history = useHistory();
 
     const [flights, setFlights] = useState<IFlight[]>([]);
 
     const fetchData = async () => {
         const data = await flightService.getFlights(from, destination);
         setFlights(data);
+        clearState();
     }
 
     useEffect(() => {
         fetchData();        
     }, []) 
+
+    const onSelectClick = (id: number) => {
+        history.push(`/flights/${id}`)
+    }
 
     return(
         <>
@@ -59,7 +69,7 @@ const Flights = (props: IFlightsProps) => {
                             <TableCell align="center">{flight.departure}</TableCell>
                             <TableCell align="center">{flight.arrival}</TableCell>
                             <TableCell align="center">
-                                <Button>Обрати</Button>
+                                <Button onClick={() => onSelectClick(flight.id)}>Обрати</Button>
                             </TableCell>
                         </TableRow>
                     ))}

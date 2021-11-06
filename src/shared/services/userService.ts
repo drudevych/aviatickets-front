@@ -1,3 +1,5 @@
+import IAuthInfo from "../interfaces/IAuthInfo";
+
 export const userService = {
 
     register: async (email: string, password: string): Promise<string | null> => {
@@ -17,8 +19,13 @@ export const userService = {
         } )
     },
 
-    login: async (email: string, password: string): Promise<string | null> => {
-        return await fetch('https://mrpzlab-api.herokuapp.com/users/sign_in', {
+    login: async (email: string, password: string): Promise<IAuthInfo> => {
+        const authInfo : IAuthInfo = {
+            id: '',
+            jwt: ''
+        }; 
+
+        await fetch('https://mrpzlab-api.herokuapp.com/users/sign_in', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -30,7 +37,10 @@ export const userService = {
                 }               
             })
         }).then(res => {
-            return res.headers.get('authorization');
-        } )
+            authInfo.jwt = res.headers.get('authorization');
+            return res.json(); 
+        } ).then(body => authInfo.id = body.id)
+
+        return authInfo;
     },
 }

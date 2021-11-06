@@ -15,6 +15,11 @@ const Navigation = () => {
     const [from, setFrom] = useState('');
     const [destination, setDestination] = useState('');
 
+    const clearState = () => {
+        setFrom('');
+        setDestination('');
+      }
+
     return (
         <Router>
            <Switch>
@@ -26,13 +31,17 @@ const Navigation = () => {
                 </Route>
                 <Route path='/flights/:id' component={FlightInfo} />
                 <Route path="/flights" >
-                    <Flights from={from} destination={destination}/>
+                    <Flights from={from} destination={destination} clearState={clearState}/>
                 </Route>
                 <Route path="/home">
                     <Home setFrom={setFrom} setDestination={setDestination}/>
                 </Route>
                 <Route path="/">
-                    <Home setFrom={setFrom} setDestination={setDestination} />
+                    {localStorage.getItem('jwt') 
+                    ? 
+                    <Home setFrom={setFrom} setDestination={setDestination} /> 
+                    : 
+                    <LoginPage />}                    
                 </Route>
             </Switch>
         </Router>
