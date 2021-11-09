@@ -1,44 +1,34 @@
 import React, { useEffect, useState } from 'react';
-import IFlight from '../shared/interfaces/IFlight'
-import {  Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, Typography } from '@mui/material';
-import { flightService } from '../shared/services/flightService'
-import { useHistory } from 'react-router-dom';
+import { flightService } from '../shared/services/flightService';
+import { Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import { IBookedFlight } from './../shared/interfaces/IBookedFlight';
 
-export interface IFlightsProps{
-    from: string;
-    destination: string;
-    clearState: () => void;
+export interface IBookingsInfoProps{
 }
 
-const Flights = (props: IFlightsProps) => {
-    
-    const {from, destination, clearState} = props;
+const BookingsInfo = (props: IBookingsInfoProps) => {
 
-    const history = useHistory();
-
-    const [flights, setFlights] = useState<IFlight[]>([]);
+    const [bookings, setBookings] = useState<IBookedFlight[]>([]);
 
     const fetchData = async () => {
-        const data = await flightService.getFlights(from, destination);
-        setFlights(data);
-        clearState();
-    }
+        const data = await flightService.getBookingsInfo();
+        setBookings(data);
+    };
+
+    const onCancelClick = async (id: string) => {
+        await flightService.cancelBooking(id);
+        setBookings(bookings.filter(item => item.id !== id))
+    };
 
     useEffect(() => {
-        fetchData();        
+        fetchData();      
     }, []) 
-
-    const onSelectClick = (id: number) => {
-        history.push(`/flights/${id}`)
-    }
-
-    console.log(flights)
 
     return(
         <>
              <TableContainer>
                 <Typography variant="h3" component="h3" mt={5} fontFamily='Comfortaa' color='#316984' align='center'>
-                    Результати пошуку
+                    Ваші бронювання
                 </Typography>
                 <Table sx={{ width: '74%', marginLeft: '13%', marginTop: '40px', backgroundColor: 'rgba(243, 243, 255, 0.9)', boxShadow: '0px 0px 10px 2px rgba(0, 0, 0, 0.6)', borderRadius: 1 }} aria-label="simple table">
                     <TableHead>
@@ -67,35 +57,35 @@ const Flights = (props: IFlightsProps) => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                    {flights.map((flight: IFlight) => (
+                    {bookings.map((booking: IBookedFlight) => (
                         <TableRow
-                        key={flight.id}
+                        key={booking.id}
                         sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                         >
                             <TableCell align="center">
                                 <Typography fontFamily='Comfortaa' color='#316984' align='center'>
-                                    {flight.from}
+                                    {booking.flight.from}
                                 </Typography>
                             </TableCell>
                             <TableCell align="center">
                                 <Typography fontFamily='Comfortaa' color='#316984' align='center'>
-                                    {flight.destination}
+                                    {booking.flight.destination}
                                 </Typography>    
                             </TableCell>
                             <TableCell align="center">
                                 <Typography fontFamily='Comfortaa' color='#316984' align='center'>
-                                    {new Date(flight.departure).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                                    {new Date(booking.flight.departure).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
                                 </Typography>   
                             </TableCell>
                             <TableCell align="center">
                                 <Typography fontFamily='Comfortaa' color='#316984' align='center'>
-                                    {new Date(flight.arrival).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}    
+                                    {new Date(booking.flight.arrival).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}    
                                 </Typography>
                             </TableCell>
                             <TableCell align="center">
-                                <Button onClick={() => onSelectClick(flight.id)}>
+                                <Button onClick={() => onCancelClick(booking.id)}>
                                     <Typography fontFamily='Comfortaa' align='center'>
-                                        Обрати    
+                                        Скасувати    
                                     </Typography>
                                 </Button>
                             </TableCell>
@@ -108,4 +98,4 @@ const Flights = (props: IFlightsProps) => {
     );
 }
 
-export default Flights;
+export default BookingsInfo;

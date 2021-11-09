@@ -9,6 +9,7 @@ import Flights from '../flights-page/Flights'
 import FlightInfo from '../flight-info-page/FlightInfo';
 import Registration from '../registration-page/Registation';
 import LoginPage from '../login-page/LoginPage';
+import BookingsInfo from '../bookings-page/BookingsInfo';
 
 
 const Navigation = () => {
@@ -23,6 +24,9 @@ const Navigation = () => {
     return (
         <Router>
            <Switch>
+                <Route path="/bookings" >
+                    <BookingsInfo />
+                </Route>
                 <Route path="/registration" >
                     <Registration />
                 </Route>

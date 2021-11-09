@@ -1,4 +1,6 @@
-import IFlight from '../../flights-page/interfaces/IFlight'
+import IFlight from '../interfaces/IFlight';
+import { IBookingInfo } from './../interfaces/IBookingInfo';
+import { IBookedFlight } from './../interfaces/IBookedFlight';
 
 export const flightService = {
 
@@ -48,6 +50,40 @@ export const flightService = {
                     'flight_id': flightId
                 }               
             }) 
+        }).then(res => res)
+    },
+
+    getBookingsInfo: async (): Promise<IBookedFlight[]> => {
+        const flights: IBookedFlight[] = [];
+
+        await fetch(`https://mrpzlab-api.herokuapp.com/api/v1/bookings/`, {
+            method: 'GET',
+            headers: {
+                'Authorization':`${localStorage.getItem('jwt')}`,
+                'Content-Type': 'application/json'
+              },       
+            }).then(res => res.json())
+            .then(async (data: IBookingInfo[]) => {
+                    for(const item of data){
+                        const flight = await flightService.getFlightInfo(item.flight_id);
+                        flights.push({
+                            id: item.id,
+                            flight: flight                    
+                        });
+                    }
+                }
+            )
+
+        return flights;
+    },
+
+    cancelBooking: async (bookingId: string): Promise<Response | void> => {
+        return await fetch(`https://mrpzlab-api.herokuapp.com/api/v1/bookings/${bookingId}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization':`${localStorage.getItem('jwt')}`,
+                'Content-Type': 'application/json'
+              } 
         }).then(res => res)
     }
 }

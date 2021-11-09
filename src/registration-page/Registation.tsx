@@ -44,8 +44,8 @@ const Registration = (props: IRegistrationProps) => {
         {isLoggedIn ? 
             <Redirect to="/home" /> 
             :
-            <Container maxWidth="xs" >
-                <Typography variant="h3" mt={30} fontFamily='Tahoma' align='center'>
+            <Container maxWidth="sm" >
+                <Typography variant="h3" mt={'60%'} fontFamily='Comfortaa' color='#316984' align='center'>
                     Зареєструватись
                 </Typography>
                 <form onSubmit={onSubmit}>

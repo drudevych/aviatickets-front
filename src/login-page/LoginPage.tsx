@@ -45,7 +45,7 @@ const LoginPage = (props: ILoginPageProps) => {
             <Redirect to="/home" /> 
             :
             <Container maxWidth="xs" >
-                <Typography variant="h3" mt={30} fontFamily='Tahoma' align='center'>
+                <Typography variant="h3" mt={'80%'} fontFamily='Comfortaa' color='#316984' align='center'>
                     Увійти
                 </Typography>
                 <form onSubmit={onSubmit}>
